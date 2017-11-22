@@ -7,8 +7,8 @@ describe("store", () => {
         const store = makeStore();
         expect(new Map()).to.equal(store.getState());
 
-        const state = store.dispatch({type: "SET_ENTRIES", entries: ["Trainspotting", "28 Days Later"]});
-        expect(state).to.equal(fromJs({
+        store.dispatch({type: "SET_ENTRIES", entries: ["Trainspotting", "28 Days Later"]});
+        expect(store.getState()).to.equal(fromJS({
             entries: ["Trainspotting", "28 Days Later"]
         }))
     })

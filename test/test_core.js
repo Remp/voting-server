@@ -81,33 +81,27 @@ describe("Application logic", () => {
             })
             const nextState = vote(voteState, "Trainspotting");
             expect(nextState).to.equal(new Map({
-                vote: new Map({
-                    pairs: List.of("Trainspotting", "28 Days Later"),
-                    tally: {
-                        Trainspotting: 1
-                    }
-                }),
-                entries: new List()
+                pairs: List.of("Trainspotting", "28 Days Later"),
+                tally: new Map({
+                    Trainspotting: 1
+                })
             }))
         });
         it("добавляем голос данной записи", () => {
             const voteState = new Map({
                 pairs: List.of("Trainspotting", "28 Days Later"),
-                tally: {
+                tally: new Map({
                     Trainspotting: 3,
                     "28 Days Later": 2
-                }
+                })
             });
             const nextState = vote(voteState, 'Trainspotting');
             expect(nextState).to.equal(new Map({
-                vote: new Map({
-                    pairs: List.of("Trainspotting", "28 Days Later"),
-                    tally: {
-                        Trainspotting: 4,
-                        "28 Days Later": 2
-                    }
-                }),
-                entries: new List()
+                pairs: List.of("Trainspotting", "28 Days Later"),
+                tally: new Map({
+                    Trainspotting: 4,
+                    "28 Days Later": 2
+                })
             }));
         });
     })
