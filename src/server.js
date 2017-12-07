@@ -1,16 +1,24 @@
-import Server from "socket.io";
+const io = require('socket.io');
+import {increment, decrement, VOTE_LIMIT} from './constants';
 
-export function startServer(store){
-    const io = new Server().attach("8090");
-
-    //при каждом изменении state всем клиентам шлем новый state
+export default (store) => {
+    const server = io();
+    
     store.subscribe(() => {
-        io.emit("state", store.getState().toJS());
+        console.log('in store subscr');
+        server.emit("state", store.getState().toJS());
     })
-
-    //при подключении отослать текущий state
-    io.on('conneсtion', socket => {
+    server.on('connect', socket => {
+        console.log(`${socket.handshake.address} has joined`);
+        socket.on('disconnect', () => {
+            decrement();
+            console.log('disconnected');
+            console.log(VOTE_LIMIT.toString());
+        })
         socket.emit("state", store.getState().toJS());
         socket.on("action", store.dispatch.bind(store));
-    })
+        increment();
+        console.log(VOTE_LIMIT.toString());
+    });
+    server.attach(7000);
 }

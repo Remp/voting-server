@@ -2,6 +2,7 @@ import {List, Map} from 'immutable';
 import {expect} from 'chai';
 
 import {setEntries, next, vote} from '../src/core';
+import {setLimit_forTest} from '../src/constants';
 
 describe("Application logic", () => {
     describe("setEntries", () => {
@@ -76,33 +77,63 @@ describe("Application logic", () => {
     });
     describe("vote", () => {
         it("создает результат голосования для данной записи", () => {
+            setLimit_forTest(10);
             const voteState = new Map({
-                pairs: List.of("Trainspotting", "28 Days Later")
+                vote: new Map({
+                    pairs: List.of("Trainspotting", "28 Days Later"),
+                })
             })
             const nextState = vote(voteState, "Trainspotting");
             expect(nextState).to.equal(new Map({
-                pairs: List.of("Trainspotting", "28 Days Later"),
-                tally: new Map({
-                    Trainspotting: 1
+                vote: Map({
+                    pairs: List.of("Trainspotting", "28 Days Later"),
+                    tally: new Map({
+                        Trainspotting: 1
+                    })
                 })
             }))
         });
         it("добавляем голос данной записи", () => {
+            setLimit_forTest(10);            
             const voteState = new Map({
-                pairs: List.of("Trainspotting", "28 Days Later"),
-                tally: new Map({
-                    Trainspotting: 3,
-                    "28 Days Later": 2
+                vote: Map({
+                    pairs: List.of("Trainspotting", "28 Days Later"),
+                    tally: new Map({
+                        Trainspotting: 3,
+                        "28 Days Later": 2
+                    })
                 })
             });
             const nextState = vote(voteState, 'Trainspotting');
             expect(nextState).to.equal(new Map({
-                pairs: List.of("Trainspotting", "28 Days Later"),
-                tally: new Map({
-                    Trainspotting: 4,
-                    "28 Days Later": 2
+                vote: Map({
+                    pairs: List.of("Trainspotting", "28 Days Later"),
+                    tally: new Map({
+                        Trainspotting: 4,
+                        "28 Days Later": 2
+                    })
                 })
             }));
         });
+        it('вызывает NEXT', () => {
+            setLimit_forTest(6);            
+            const voteState = new Map({
+                vote: new Map({
+                    pairs: List.of("Trainspotting", "28 Days Later"),
+                    tally: new Map({
+                        Trainspotting: 3,
+                        "28 Days Later": 2
+                    })
+                }),
+                entries: List.of("Sunshine", "127 hours", "Millions")
+            })
+            const newState = vote(voteState, 'Trainspotting');
+            expect(newState).to.equal(new Map({
+                vote: new Map({
+                    pairs: List.of("Sunshine", "127 hours")
+                }),
+                entries: List.of("Millions", "Trainspotting")
+            }))
+        })
     })
 })
