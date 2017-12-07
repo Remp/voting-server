@@ -134,6 +134,6 @@ describe("Application logic", () => {
                 }),
                 entries: List.of("Millions", "Trainspotting")
             }))
-        })
+        });
     })
 })

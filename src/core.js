@@ -22,7 +22,6 @@ export function vote(state, entry){
     console.log(summ);
     if (summ >= VOTE_LIMIT)
     {
-        console.log(current)
         return next(current)        
     }
     return current

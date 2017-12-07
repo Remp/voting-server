@@ -4,7 +4,6 @@ import entries from './src/entries';
 import io from 'socket.io';
 
 export const store = makeStore();
-console.log('store created');
 
 
 startServer(store);
@@ -17,4 +16,3 @@ console.log('dispatched');
 store.dispatch({
     type: "NEXT"
 });
-console.log('end');
