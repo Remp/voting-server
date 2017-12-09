@@ -1,11 +1,13 @@
 import {List, Map} from 'immutable';
 import {VOTE_LIMIT} from './constants';
+import {reset} from './ip_storage';
 
 export function setEntries(state, entries){
     return state.set('entries', new List(entries));
 }
 export function next(state){
     const entries = state.get("entries").concat(getWinner(state.get('vote')));
+    reset();
     if (entries.size === 1)
         return state.remove('vote').remove('entries').set('winner', entries.first());
     return state.merge(Map({
@@ -19,7 +21,6 @@ export function vote(state, entry){
     const current = state.updateIn(['vote','tally', entry], 0, tally => tally + 1);
     let summ = 0;
     current.getIn(['vote', 'tally']).map(v => summ += v);
-    console.log(summ);
     if (summ >= VOTE_LIMIT)
     {
         return next(current)        
